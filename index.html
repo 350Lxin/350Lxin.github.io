@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Day 3 错词阅读练习</title>
+  <style>
+    :root {
+      --ink: #24313f;
+      --muted: #6f7d8c;
+      --paper: #fffdf9;
+      --line: #e4e8ed;
+      --blue: #2364aa;
+      --blue-soft: #eaf3ff;
+      --gold: #d97706;
+      --gold-soft: #fff4df;
+      --shadow: 0 14px 40px rgba(36, 49, 63, .08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: #f3f6f8;
+      font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      line-height: 1.7;
+    }
+    .wrap { width: min(1120px, calc(100% - 32px)); margin: 0 auto; }
+    header { padding: 42px 0 26px; }
+    .eyebrow { margin: 0 0 8px; color: var(--blue); font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+    h1 { margin: 0; font-size: clamp(30px, 5vw, 48px); line-height: 1.15; letter-spacing: 0; }
+    .subtitle { max-width: 780px; margin: 14px 0 0; color: var(--muted); font-size: 16px; }
+    .stats { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+    .stat { padding: 7px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--paper); color: var(--muted); font-size: 13px; }
+    main { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(300px, .8fr); gap: 22px; padding-bottom: 48px; }
+    .panel { border: 1px solid var(--line); border-radius: 8px; background: var(--paper); box-shadow: var(--shadow); }
+    .panel-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 20px 24px 12px; }
+    h2 { margin: 0; font-size: 22px; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 8px; }
+    button, input { font: inherit; }
+    button { border: 1px solid #c9d4df; border-radius: 6px; padding: 8px 12px; background: #fff; color: var(--ink); cursor: pointer; }
+    button:hover { border-color: var(--blue); color: var(--blue); }
+    button:focus-visible, select:focus-visible, input:focus-visible { outline: 3px solid rgba(35, 100, 170, .25); outline-offset: 2px; }
+    .speech-panel { margin: 0 24px 16px; padding: 14px 16px; border: 1px solid #d7e3ef; border-radius: 8px; background: #f7fbff; }
+    .speech-title { margin: 0 0 10px; color: var(--blue); font-size: 14px; font-weight: 700; }
+    .speech-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .speech-controls select { min-width: 180px; max-width: 100%; padding: 8px 10px; border: 1px solid #c9d4df; border-radius: 6px; background: #fff; color: var(--ink); }
+    .rate-control { display: inline-flex; align-items: center; gap: 7px; color: var(--muted); font-size: 13px; }
+    .rate-control input { width: 100px; accent-color: var(--blue); }
+    .speech-status { min-height: 1.4em; margin: 9px 0 0; color: var(--muted); font-size: 13px; }
+    .article { padding: 8px 24px 28px; }
+    .article p { margin: 0 0 18px; font-family: Georgia, "Times New Roman", serif; font-size: 18px; }
+    .article .lead { color: #425363; font-family: inherit; font-size: 15px; }
+    .word { padding: 1px 4px; border-radius: 4px; background: var(--gold-soft); color: #9a5700; font-weight: 700; cursor: pointer; }
+    .word:hover, .word.speaking { background: #ffd98a; color: #7a4300; }
+    .speak-paragraph { float: right; margin: 2px 0 4px 10px; padding: 3px 7px; border-color: #d7e3ef; color: var(--blue); font-size: 14px; line-height: 1.2; }
+    .speak-paragraph:hover, .speak-paragraph.speaking { background: var(--blue-soft); }
+    .article p.speaking { border-radius: 4px; box-shadow: inset 3px 0 0 #8db9e5; }
+    .translation { margin: 4px 0 22px; padding: 13px 15px; border-left: 3px solid #bdd5ef; background: var(--blue-soft); color: #49657f; font-size: 14px; }
+    .translation.hidden { display: none; }
+    .side { padding-bottom: 18px; }
+    .search { width: 100%; margin: 0 24px 14px; width: calc(100% - 48px); padding: 10px 12px; border: 1px solid var(--line); border-radius: 6px; background: #fff; color: var(--ink); }
+    .table-wrap { max-height: 700px; overflow: auto; padding: 0 18px 10px; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th, td { padding: 9px 7px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { position: sticky; top: 0; background: var(--paper); color: var(--muted); font-size: 12px; }
+    td:first-child { color: var(--blue); font-weight: 700; white-space: nowrap; }
+    td:nth-child(3) { color: #9a5700; }
+    footer { padding: 0 0 36px; color: var(--muted); font-size: 13px; }
+    @media (max-width: 820px) {
+      main { grid-template-columns: 1fr; }
+      .panel-head { align-items: flex-start; flex-direction: column; }
+      .article p { font-size: 17px; }
+    }
+    @media print {
+      body { background: #fff; }
+      .panel { box-shadow: none; }
+      .toolbar, .search, .speech-panel, .speak-paragraph { display: none; }
+      main { display: block; }
+      .side { margin-top: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <p class="eyebrow">Vocabulary Reading · Day 3</p>
+      <h1>A Small Festival by the Sea</h1>
+      <p class="subtitle">一篇围绕社区节日活动展开的简单英语短文。金色词语是本章需要重点复习的错词，鼠标悬停可查看中文释义。</p>
+      <div class="stats">
+        <span class="stat">58 个目标词</span>
+        <span class="stat">故事化场景</span>
+        <span class="stat">2026-09-07</span>
+      </div>
+    </header>
+
+    <main>
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Reading</h2>
+          <div class="toolbar">
+            <button id="toggleTranslation" type="button">隐藏中文提示</button>
+            <button type="button" onclick="window.print()">打印文章</button>
+          </div>
+        </div>
+        <div class="speech-panel" aria-label="发音练习工具">
+          <p class="speech-title">发音练习</p>
+          <div class="speech-controls">
+            <button id="readArticle" type="button">🔊 全文发音</button>
+            <button id="readSelection" type="button">🔊 朗读选中</button>
+            <button id="pauseSpeech" type="button">暂停</button>
+            <button id="stopSpeech" type="button">停止</button>
+            <select id="voiceSelect" aria-label="选择英语新闻播报声音"><option value="">自动选择自然英语声音</option></select>
+            <label class="rate-control" for="rate">语速 <input id="rate" type="range" min="0.7" max="1.1" step="0.01" value="0.92"><output id="rateValue">0.92x</output></label>
+          </div>
+          <p id="speechStatus" class="speech-status" role="status" aria-live="polite">优先使用系统中的 Natural / Neural / Online 英语声音；也可以先选中一段英文再点击“朗读选中”。</p>
+        </div>
+        <article class="article">
+          <p class="lead">Read once for the story. Read again and say the highlighted words aloud.</p>
+
+          <p>On Saturday morning, Mia helped her <span class="word" title="表兄弟（或姐妹）">cousin</span> Leo prepare for the town <span class="word" title="节日">festival</span>. Their <span class="word" title="首要的；主要的">primary</span> plan was simple: arrive early, help the team, and enjoy the music. Leo put a <span class="word" title="可重复使用的">reusable</span> bottle and some fruit in the <span class="word" title="冰箱">fridge</span>. Mia checked the event <span class="word" title="登记；注册">registration</span> on her <span class="word" title="平板电脑">tablet</span> and saw that each <span class="word" title="参加者">participant</span> needed one <span class="word" title="单独的；单程的">single</span> ticket.</p>
+          <p class="translation">星期六早上，Mia 帮助表兄 Leo 为小镇节日做准备。他们的主要计划很简单：早点到达、帮助团队、享受音乐。Leo 把可重复使用的水瓶和水果放进冰箱。Mia 在平板电脑上查看活动登记信息，发现每位参加者都需要一张单程票。</p>
+
+          <p>They drove along the wide <span class="word" title="大街；林荫道">avenue</span> to the community center. Before leaving, Leo parked the car in a nearby <span class="word" title="车库；汽车修理厂">garage</span>. At the <span class="word" title="入口">entrance</span>, a volunteer checked Leo's <span class="word" title="驾驶执照">driving license</span>, <span class="word" title="护照">passport</span>, and <span class="word" title="邮政编码">postcode</span>. All the details were <span class="word" title="有效的；有根据的">valid</span>, so the volunteer gave him a blue <span class="word" title="证书">certificate</span> for the cooking class. A small <span class="word" title="广告">advertisement</span> beside the desk announced an <span class="word" title="额外的">additional</span> art lesson.</p>
+          <p class="translation">他们沿着宽阔的大街开到社区中心。在入口处，一名志愿者检查了 Leo 的驾照、护照和邮编。所有信息都有效，因此志愿者给了他一张烹饪课证书。桌旁的一则小广告还介绍了一堂额外的艺术课。</p>
+
+          <p>Before the festival opened, the center had a few problems. A <span class="word" title="技术员">technician</span> came to <span class="word" title="修理">repair</span> a speaker, while Mia helped <span class="word" title="处理；操纵">handle</span> the chairs. Leo pushed a guest in a <span class="word" title="轮椅">wheelchair</span> onto the wooden <span class="word" title="甲板">deck</span>. Near the pool, a worker used a <span class="word" title="真空；用吸尘器打扫">vacuum</span> to clean the floor. The only <span class="word" title="担忧">concern</span> was the hot weather, but the <span class="word" title="优势">advantage</span> of the center was its cool shade. The <span class="word" title="劣势">disadvantage</span> was that the old building needed more <span class="word" title="修理">repair</span>.</p>
+          <p class="translation">节日开始前，中心出现了几个问题。技术员来修理音箱，Mia 帮忙处理椅子。Leo 推着一位坐轮椅的客人走上木制甲板。游泳池旁，一名工作人员用吸尘器清洁地面。唯一的担忧是天气炎热，但中心的优势是有阴凉处。劣势是这座老建筑还需要更多维修。</p>
+
+          <p>At noon, families sat together for <span class="word" title="吃饭；就餐">dining</span>. The cook explained that rice, bread, and beans were healthy sources of <span class="word" title="碳水化合物">carbohydrate</span>. He added a little <span class="word" title="盐">salt</span> and asked everyone to <span class="word" title="分享">share</span> the food. Mia made a small <span class="word" title="购买；采购">purchase</span> at the craft stall: a bowl made from <span class="word" title="黏土">clay</span>. She received a <span class="word" title="折扣">discount</span>, and the bowl had an <span class="word" title="原来的；原创的">original</span> blue design with a <span class="word" title="紫色的">purple</span> bird.</p>
+          <p class="translation">中午，家人们一起吃饭。厨师解释说，米饭、面包和豆类是健康的碳水化合物来源。他加了一点盐，并请大家分享食物。Mia 买了一个黏土碗，还享受了折扣。这个碗有原创的蓝色图案，上面画着一只紫色的鸟。</p>
+
+          <p>In the afternoon, an <span class="word" title="艺术家">artist</span> showed children how to draw a <span class="word" title="中间的；内侧的">medial</span> line through a shape. Then the children made clay boats and placed them on the water. A short <span class="word" title="赛跑；比赛">race</span> started beside the <span class="word" title="游泳池">swimming pool</span>. The center also offered a friendly information <span class="word" title="服务；业务">service</span> for visitors who needed help. After that, the <span class="word" title="钢琴">piano</span> player performed a gentle song. The local radio <span class="word" title="广播；播送">broadcast</span> the music, and the <span class="word" title="观众；听众">audience</span> clapped. The main <span class="word" title="特征">feature</span> of the day was that everyone could join, including people with different jobs and different kinds of <span class="word" title="职业；占有">occupation</span>.</p>
+          <p class="translation">下午，一位艺术家教孩子们如何在图形中画一条中线。孩子们制作黏土小船，把它们放在水面上。游泳池旁开始了一场短跑。随后，钢琴演奏者演奏了一首温柔的歌曲。当地电台播出了音乐，观众纷纷鼓掌。这一天的主要特点是每个人都能参加，包括从事不同职业的人。</p>
+
+          <p>As evening came, a <span class="word" title="蜡烛">candle</span> lit the table near the <span class="word" title="帐篷">tent</span>. Mia read a little <span class="word" title="诗歌">poetry</span> about the sea. Leo helped <span class="word" title="安排">arrange</span> the final <span class="word" title="音乐会">concert</span> and gave a <span class="word" title="详细的">detailed</span> thank-you speech. He said the first, or <span class="word" title="最初的">initial</span>, plan had changed many times, but the team stayed calm. One child lost a toy, but the <span class="word" title="损失；丢失">loss</span> was soon solved. When the <span class="word" title="警报；闹钟">alarm</span> rang, everyone left through the entrance. They still had one <span class="word" title="机会">opportunity</span> to return next year, and the happy memory would <span class="word" title="保持；剩下">remain</span>.</p>
+          <p class="translation">傍晚，一支蜡烛照亮了帐篷旁的桌子。Mia 读了一小段关于大海的诗歌。Leo 帮忙安排最后的音乐会，并发表了详细的感谢致辞。他说最初的计划改了很多次，但团队始终保持冷静。有个孩子丢了玩具，不过损失很快就解决了。警报响起后，大家从入口离开。他们明年仍有机会回来，而这段快乐的记忆会一直留在心中。</p>
+        </article>
+      </section>
+
+      <aside class="panel side">
+        <div class="panel-head"><h2>Word List</h2><span class="stat">58</span></div>
+        <input class="search" id="search" type="search" placeholder="搜索单词或中文释义">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Word</th><th>音标</th><th>释义</th><th>错误拼写</th></tr></thead>
+            <tbody id="wordRows"></tbody>
+          </table>
+        </div>
+      </aside>
+    </main>
+    <footer>本页内容根据“错题本.xlsx”的 day3 词汇生成。</footer>
+  </div>
+
+  <script>
+    const vocabulary = [
+      ["fridge", "frɪdʒ", "冰箱", "fe"], ["valid", "ˈvælɪd", "有效的；有根据的", "void"],
+      ["technician", "tekˈnɪʃ(ə)n", "技术员", ""], ["postcode", "ˈpəʊstkəʊd", "邮政编码", "posscode"],
+      ["driving license", "ˈdraɪvɪŋ ˈlaɪs(ə)ns", "驾驶执照", "drive license"], ["primary", "ˈpraɪməri", "首要的；主要的", "p"],
+      ["garage", "ˈɡærɑːʒ", "车库；汽车修理厂", ""], ["swimming pool", "ˈswɪmɪŋ puːl", "游泳池", "swimm"],
+      ["reusable", "ˌriːˈjuːzəb(ə)l", "可再用的", "reuseable"], ["vacuum", "ˈvækjuːm", "真空；用吸尘器打扫", ""],
+      ["avenue", "ˈævənjuː", "大街；林荫道", "aver"], ["candle", "ˈkænd(ə)l", "蜡烛", "c"],
+      ["additional", "əˈdɪʃən(ə)l", "额外的；附加的", "ad"], ["advertisement", "ədˈvɜːtɪsmənt", "广告", "ad"],
+      ["participant", "pɑːˈtɪsɪpənt", "参与者", ""], ["tablet", "ˈtæblət", "平板电脑", ""],
+      ["share", "ʃeə(r)", "共享；分享", ""], ["tent", "tent", "帐篷", ""],
+      ["race", "reɪs", "赛跑；比赛", "rise"], ["purple", "ˈpɜːp(ə)l", "紫色的", ""],
+      ["festival", "ˈfestɪv(ə)l", "节日", "first"], ["service", "ˈsɜːvɪs", "服务；业务", ""],
+      ["concern", "kənˈsɜːn", "担忧；关注", ""], ["advantage", "ədˈvɑːntɪdʒ", "优势；好处", "adanvatage"],
+      ["occupation", "ˌɒkjuˈpeɪʃ(ə)n", "职业；占有", ""], ["passport", "ˈpɑːspɔːt", "护照", "posport"],
+      ["arrange", "əˈreɪndʒ", "安排；排列", "average"], ["detailed", "ˈdiːteɪld", "详细的；细致的", "dite"],
+      ["poetry", "ˈpəʊətri", "诗歌；诗作", "potrait"], ["wheelchair", "ˈwiːltʃeə(r)", "轮椅", ""],
+      ["loss", "lɒs", "损失；丢失", "lose"], ["alarm", "əˈlɑːm", "警报；闹钟", "along"],
+      ["purchase", "ˈpɜːtʃəs", "购买；采购", "perche"], ["initial", "ɪˈnɪʃ(ə)l", "最初的；开始的", "in"],
+      ["certificate", "səˈtɪfɪkət", "证书", "se"], ["cousin", "ˈkʌz(ə)n", "表兄弟（或姐妹）", "co"],
+      ["registration", "ˌredʒɪˈstreɪʃ(ə)n", "登记；注册", "r"], ["single", "ˈsɪŋɡl", "单一的；单独的", "thing"],
+      ["dining", "ˈdaɪnɪŋ", "吃饭；就餐", "d"], ["repair", "rɪˈpeə(r)", "修理；修补", "rep"],
+      ["handle", "ˈhænd(ə)l", "处理；操纵", "h"], ["original", "əˈrɪdʒən(ə)l", "原来的；原创的", "arrange"],
+      ["discount", "ˈdɪskaʊnt", "折扣", "disco"], ["piano", "piˈænəʊ", "钢琴", "paino"],
+      ["broadcast", "ˈbrɔːdkɑːst", "广播；播送", ""], ["concert", "ˈkɒnsət", "音乐会", "consert"],
+      ["carbohydrate", "ˌkɑːbəʊˈhaɪdreɪt", "碳水化合物", "carbonhyde"], ["salt", "sɔːlt", "盐", "sort"],
+      ["opportunity", "ˌɒpəˈtjuːnəti", "机会", "opt"], ["feature", "ˈfiːtʃə(r)", "特征；特色", "feture"],
+      ["entrance", "ˈentrəns", "入口", "antuhenic"], ["deck", "dek", "甲板；舱面", "d"],
+      ["clay", "kleɪ", "黏土", "claim"], ["audience", "ˈɔːdiəns", "观众；听众", "odi"],
+      ["artist", "ˈɑːtɪst", "艺术家；画家", "o"], ["medial", "ˈmiːdiəl", "中间的；内侧的", "middle"],
+      ["disadvantage", "ˌdɪsədˈvɑːntɪdʒ", "劣势；不利", ""], ["remain", "rɪˈmeɪn", "保持；剩下", ""]
+    ];
+
+    const rows = document.getElementById("wordRows");
+    const search = document.getElementById("search");
+    const renderRows = () => {
+      const query = search.value.trim().toLowerCase();
+      rows.innerHTML = vocabulary
+        .filter(([word, phonetic, meaning, wrong]) => [word, phonetic, meaning, wrong].join(" ").toLowerCase().includes(query))
+        .map(([word, phonetic, meaning, wrong]) => `<tr><td>${word}</td><td>${phonetic}</td><td>${meaning}</td><td>${wrong || ""}</td></tr>`)
+        .join("");
+    };
+    search.addEventListener("input", renderRows);
+    renderRows();
+
+    const toggle = document.getElementById("toggleTranslation");
+    toggle.addEventListener("click", () => {
+      const hidden = document.querySelector(".translation").classList.toggle("hidden");
+      document.querySelectorAll(".translation").forEach(el => el.classList.toggle("hidden", hidden));
+      toggle.textContent = hidden ? "显示中文提示" : "隐藏中文提示";
+    });
+
+    const article = document.querySelector(".article");
+    const speechStatus = document.getElementById("speechStatus");
+    const voiceSelect = document.getElementById("voiceSelect");
+    const rateInput = document.getElementById("rate");
+    const rateValue = document.getElementById("rateValue");
+    const pauseButton = document.getElementById("pauseSpeech");
+    const synth = window.speechSynthesis;
+    let activeSpeechTarget = null;
+    let lastSelectedText = "";
+
+    const cleanSpeechText = (element) => {
+      const clone = element.cloneNode(true);
+      clone.querySelectorAll("button").forEach(button => button.remove());
+      return clone.textContent.replace(/\s+/g, " ").trim();
+    };
+
+    const setSpeechStatus = (message) => { speechStatus.textContent = message; };
+    const clearSpeakingState = () => {
+      if (activeSpeechTarget) activeSpeechTarget.classList.remove("speaking");
+      activeSpeechTarget = null;
+    };
+
+    const naturalVoiceScore = (voice) => {
+      const name = `${voice.name} ${voice.lang}`.toLowerCase();
+      let score = 0;
+      if (/natural|neural|online|premium|enhanced|multilingual/.test(name)) score += 100;
+      if (/jenny|aria|guy|christopher|ryan|sara|ava|samantha|daniel|google us english/.test(name)) score += 40;
+      if (/en-us/.test(name)) score += 15;
+      if (voice.localService === false) score += 20;
+      if (/compact|espeak|festival|robot|desktop/.test(name)) score -= 80;
+      return score;
+    };
+    const availableVoices = () => synth.getVoices()
+      .filter(voice => /^en(-|_)/i.test(voice.lang))
+      .sort((a, b) => naturalVoiceScore(b) - naturalVoiceScore(a) || a.name.localeCompare(b.name));
+    const loadVoices = () => {
+      const current = voiceSelect.value;
+      const voices = availableVoices();
+      voiceSelect.innerHTML = '<option value="">自动选择自然英语声音</option>';
+      voices.forEach((voice, index) => {
+        const option = document.createElement("option");
+        option.value = String(index);
+        const badge = naturalVoiceScore(voice) >= 100 ? " · 自然/神经" : "";
+        option.textContent = `${voice.name} (${voice.lang})${badge}`;
+        voiceSelect.appendChild(option);
+      });
+      if (current && Number(current) < voices.length) voiceSelect.value = current;
+    };
+    loadVoices();
+    if ("onvoiceschanged" in synth) synth.addEventListener("voiceschanged", loadVoices);
+
+    const splitIntoSpeechChunks = (text) => text
+      .replace(/\s+/g, " ")
+      .trim()
+      .split(/(?<=[.!?])\s+/)
+      .map(chunk => chunk.trim())
+      .filter(Boolean);
+
+    let speechRunId = 0;
+    const speak = (text, target = null, label = "内容") => {
+      if (!text) {
+        setSpeechStatus("没有找到可朗读的英文内容，请先选中英文文字。 ");
+        return;
+      }
+      if (!("speechSynthesis" in window)) {
+        setSpeechStatus("当前浏览器不支持网页发音，请换用最新版 Chrome、Edge 或 Safari。 ");
+        return;
+      }
+      synth.cancel();
+      clearSpeakingState();
+      const voices = availableVoices();
+      const selectedVoice = voiceSelect.value === "" ? null : voices[Number(voiceSelect.value)];
+      const voice = selectedVoice || voices[0] || voices.find(candidate => /en-US/i.test(candidate.lang)) || null;
+      const chunks = splitIntoSpeechChunks(text);
+      const runId = ++speechRunId;
+      let chunkIndex = 0;
+      activeSpeechTarget = target;
+      if (activeSpeechTarget) activeSpeechTarget.classList.add("speaking");
+      pauseButton.textContent = "暂停";
+
+      const speakNextChunk = () => {
+        if (runId !== speechRunId || chunkIndex >= chunks.length) {
+          if (runId === speechRunId) { clearSpeakingState(); pauseButton.textContent = "暂停"; setSpeechStatus("朗读结束。 "); }
+          return;
+        }
+        const utterance = new SpeechSynthesisUtterance(chunks[chunkIndex]);
+        utterance.voice = voice;
+        utterance.lang = voice?.lang || "en-US";
+        utterance.rate = Number(rateInput.value);
+        utterance.pitch = 0.98;
+        utterance.volume = 1;
+        utterance.onstart = () => setSpeechStatus(`正在朗读：${label}（第 ${chunkIndex + 1}/${chunks.length} 句）`);
+        utterance.onend = () => {
+          if (runId !== speechRunId) return;
+          chunkIndex += 1;
+          window.setTimeout(speakNextChunk, 110);
+        };
+        utterance.onerror = (event) => {
+          if (runId !== speechRunId) return;
+          clearSpeakingState();
+          pauseButton.textContent = "暂停";
+          setSpeechStatus(`朗读失败：${event.error || "浏览器语音服务不可用"}`);
+        };
+        synth.speak(utterance);
+      };
+      if (naturalVoiceScore(voice || { name: "", lang: "", localService: true }) < 100) {
+        setSpeechStatus("当前未发现 Natural / Neural 声音，已使用可用英语声音；可在系统语音设置中安装自然英语声音。 ");
+      }
+      speakNextChunk();
+    };
+
+    article.querySelectorAll("p:not(.translation):not(.lead)").forEach((paragraph, index) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "speak-paragraph";
+      button.textContent = "🔊";
+      button.title = `朗读第 ${index + 1} 段`;
+      button.setAttribute("aria-label", `朗读第 ${index + 1} 段`);
+      button.addEventListener("click", () => speak(cleanSpeechText(paragraph), paragraph, `第 ${index + 1} 段`));
+      paragraph.appendChild(button);
+    });
+
+    article.querySelectorAll(".word").forEach(word => {
+      word.title = `${word.title}；点击朗读发音`;
+      word.setAttribute("role", "button");
+      word.setAttribute("tabindex", "0");
+      const readWord = () => speak(word.textContent.trim(), word, `单词 ${word.textContent.trim()}`);
+      word.addEventListener("click", readWord);
+      word.addEventListener("keydown", event => {
+        if (event.key === "Enter" || event.key === " ") { event.preventDefault(); readWord(); }
+      });
+    });
+
+    document.getElementById("readArticle").addEventListener("click", () => {
+      const paragraphs = [...article.querySelectorAll("p:not(.translation):not(.lead)")];
+      speak(paragraphs.map(cleanSpeechText).join(" "), article, "全文");
+    });
+    document.getElementById("readSelection").addEventListener("click", () => {
+      const selectedText = lastSelectedText || window.getSelection()?.toString().replace(/\s+/g, " ").trim();
+      speak(selectedText, null, "选中内容");
+    });
+    document.addEventListener("selectionchange", () => {
+      const selection = window.getSelection();
+      const text = selection?.toString().replace(/\s+/g, " ").trim() || "";
+      if (text && selection?.anchorNode && article.contains(selection.anchorNode)) lastSelectedText = text;
+    });
+    pauseButton.addEventListener("click", () => {
+      if (synth.speaking && !synth.paused) { synth.pause(); pauseButton.textContent = "继续"; setSpeechStatus("已暂停。 "); }
+      else if (synth.paused) { synth.resume(); pauseButton.textContent = "暂停"; setSpeechStatus("继续朗读中……"); }
+    });
+    document.getElementById("stopSpeech").addEventListener("click", () => {
+      speechRunId += 1;
+      synth.cancel();
+      clearSpeakingState();
+      pauseButton.textContent = "暂停";
+      setSpeechStatus("已停止朗读。 ");
+    });
+    rateInput.addEventListener("input", () => { rateValue.textContent = `${Number(rateInput.value).toFixed(2)}x`; });
+  </script>
+</body>
+</html>
